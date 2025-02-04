@@ -34,7 +34,8 @@ class Train:
         }
 
     def model_train(self, epochs,
-                    batch_size,
+                    train_batch,
+                    vali_batch,
                     train_dataset,
                     eval_dataset,
                     output_dir,
@@ -45,7 +46,9 @@ class Train:
         training_args = TrainingArguments(
             output_dir=output_dir,
             num_train_epochs=epochs,
-            per_device_train_batch_size=batch_size,
+            per_device_train_batch_size=train_batch,
+            per_device_eval_batch_size=vali_batch,
+            eval_accumulation_steps=1,
             save_steps=1000,
             save_total_limit=2,
             logging_steps=100,
@@ -53,6 +56,7 @@ class Train:
             learning_rate=learning_rate,
             eval_steps=500,
             logging_dir='./logs',
+            fp16=True
         )
 
         trainer = Trainer(
@@ -63,8 +67,12 @@ class Train:
             eval_dataset=eval_dataset,
             compute_metrics=self.compute_metrics
         )
-
+        print(f"setting batch_size train: {training_args.per_device_train_batch_size}")
+        print(f"setting batch_size eval: {training_args.per_device_eval_batch_size}")
+        print(f"setting num_train epochs : {training_args.num_train_epochs}")
+        print(f'device settings : {self.device}')
         trainer.train()
+
 
         trainer.save_model("output_dir")
         self.tokenizer.save_pretrained("output_dir")
