@@ -28,7 +28,7 @@ share/python-wheels/
 MANIFEST
 
 model/data/data_sets.json
-moel/data/train.csv
+model/data/train.csv
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
