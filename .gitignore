@@ -3,8 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-model/data/data_sets.json
-model/data/train.csv
 
 # C extensions
 *.so
@@ -28,6 +26,9 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+model/data/data_sets.json
+moel/data/train.csv
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
