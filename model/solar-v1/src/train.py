@@ -2,6 +2,7 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import BitsAndBytesConfig
+from trl import SFTTrainer
 
 
 class Train:
@@ -74,7 +75,7 @@ class Train:
             gradient_checkpointing=True,  # ✅ VRAM 절약 (필수)
         )
 
-        trainer = Trainer(
+        trainer = SFTTrainer(
             model=self.model,
             args=training_args,
             train_dataset=train_dataset,
