@@ -2,7 +2,11 @@ from transformers import GPT2LMHeadModel, PreTrainedTokenizerFast
 
 from transformers import Trainer, TrainingArguments, DataCollatorForLanguageModeling
 import torch
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support, roc_auc_score
+
+
+import torch
+import torch.nn.functional as F
+import numpy as np
 
 class Train:
     def __init__(self):
@@ -19,19 +23,6 @@ class Train:
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         self.model.to(self.device)
 
-    def compute_metrics(self, pred):
-        labels = pred.label_ids
-        preds = pred.predictions.argmax(-1)
-        precision, recall, f1, _ = precision_recall_fscore_support(labels, preds, average='binary')
-        acc = accuracy_score(labels, preds)
-        auc = roc_auc_score(labels, preds)
-        return {
-            'accuracy': acc,
-            'f1': f1,
-            'precision': precision,
-            'recall': recall,
-            'auroc': auc
-        }
 
     def model_train(self, epochs,
                     train_batch,
@@ -48,7 +39,6 @@ class Train:
             num_train_epochs=epochs,
             per_device_train_batch_size=train_batch,
             per_device_eval_batch_size=vali_batch,
-            eval_accumulation_steps=1,
             save_steps=1000,
             save_total_limit=2,
             logging_steps=100,
@@ -56,7 +46,7 @@ class Train:
             learning_rate=learning_rate,
             eval_steps=500,
             logging_dir='./logs',
-            fp16=True
+            fp16=True,
         )
 
         trainer = Trainer(
@@ -65,8 +55,9 @@ class Train:
             data_collator=data_collator,
             train_dataset=train_dataset,
             eval_dataset=eval_dataset,
-            compute_metrics=self.compute_metrics
         )
+
+
         print(f"setting batch_size train: {training_args.per_device_train_batch_size}")
         print(f"setting batch_size eval: {training_args.per_device_eval_batch_size}")
         print(f"setting num_train epochs : {training_args.num_train_epochs}")

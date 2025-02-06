@@ -16,11 +16,11 @@ def main():
                         help='배치 사이즈')
     parser.add_argument('--vali_batch', type=int, default=8,
                         help='배치 사이즈')
-    parser.add_argument('--num_epochs', type=int, default=5,
+    parser.add_argument('--num_epochs', type=int, default=15,
                         help='에포크 수')
     parser.add_argument('--learning_rate', type=float, default=3e-5,
                         help='학습률')
-    parser.add_argument('--dataset_file', type=str, default='./data/train.csv', help='데이터셋 파일 경로')
+    parser.add_argument('--dataset_file', type=str, default='../data/train.csv', help='데이터셋 파일 경로')
 
 
     args = parser.parse_args()
@@ -30,7 +30,7 @@ def main():
     dataset = CustomDataset(file_path=args.dataset_file, tokenizer=trainer.tokenizer, max_length=args.max_length)
 
     dataset_size = len(dataset)
-    test_size = int(0.1 * dataset_size)
+    test_size = int(0.05 * dataset_size)
     train_size = dataset_size - test_size
     train_dataset, eval_dataset = random_split(dataset, [train_size, test_size])
 
