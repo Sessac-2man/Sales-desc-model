@@ -77,6 +77,7 @@ class Train:
             args=training_args,
             train_dataset=train_dataset,
             eval_dataset=eval_dataset,
+            tokenizers=self.tokenizer
         )
 
         print(f"🔹 Batch Size (Train): {training_args.per_device_train_batch_size}")
