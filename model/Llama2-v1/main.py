@@ -6,15 +6,15 @@ from torch.utils.data import random_split
 
 
 def main():
-    parser = argparse.ArgumentParser(description='solar Fine-Tuning')
+    parser = argparse.ArgumentParser(description='Llama-2 Fine-Tuning')
 
     parser.add_argument('--model_save_path', type=str, default='./results',
                         help='모델 저장 경로')
     parser.add_argument('--max_length', type=int, default=256,
                         help='시퀀스 최대 길이')
-    parser.add_argument('--train_batch', type=int, default=4,
+    parser.add_argument('--train_batch', type=int, default=2,
                         help='배치 사이즈')
-    parser.add_argument('--vali_batch', type=int, default=4,
+    parser.add_argument('--vali_batch', type=int, default=2,
                         help='배치 사이즈')
     parser.add_argument('--num_epochs', type=int, default=3,
                         help='에포크 수')
