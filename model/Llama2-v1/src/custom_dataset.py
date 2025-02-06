@@ -17,7 +17,7 @@ class CustomDataset(Dataset):
         self.data = self.data[["instruction", "name", "words"]].rename(columns={"name": "input", "words": "output"}).to_dict(
             "records")
 
-
+        # tokenizer
         self.tokenizer = tokenizer
         self.max_length = max_length
 
