@@ -2,12 +2,12 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import BitsAndBytesConfig
-from trl import SFTTrainer
 
+from trl import SFTTrainer
 
 class Train:
     def __init__(self):
-        base_model = "beomi/OPEN-SOLAR-KO-10.7B"  # 🔹 원본 모델 사용
+        base_model = "Qwen/Qwen2.5-1.5B-Instruct"  # 🔹 원본 모델 사용
 
         bnb_config = BitsAndBytesConfig(
             load_in_4bit=True,  # ✅ 올바른 설정
@@ -29,25 +29,22 @@ class Train:
             quantization_config=bnb_config  # ✅ 올바른 설정
         )
 
-        # 🔹 k-bit Training을 위한 준비
-        self.model = prepare_model_for_kbit_training(self.model)
-
-        # 🔹 토크나이저 로드
         self.tokenizer = AutoTokenizer.from_pretrained(base_model)
         self.tokenizer.pad_token = self.tokenizer.eos_token
 
-        # 🔹 LoRA 설정
-        config = LoraConfig(
-            r=8,
-            lora_alpha=32,
-            target_modules=["q_proj", "v_proj"],  # ✅ LoRA 적용할 레이어
+        self.model = prepare_model_for_kbit_training(self.model)
+
+        lora_config = LoraConfig(
+            r=8,  # LoRA rank
+            lora_alpha=32,  # LoRA alpha
+            target_modules=["q_proj", "v_proj"],  # LoRA 적용할 레이어
             lora_dropout=0.1,
             bias="none",
             task_type="CAUSAL_LM"
         )
 
-        # 🔹 LoRA 적용
-        self.model = get_peft_model(self.model, config)
+        self.model = get_peft_model(self.model, lora_config)
+        print("✅ 양자화 된 모델 로드 완료~")
 
     def model_train(self, epochs,
                     train_batch,
@@ -94,3 +91,4 @@ class Train:
         self.tokenizer.save_pretrained(output_dir)
 
         print(f"✅ Fine-tuned LoRA 모델 저장 완료: {output_dir}")
+
